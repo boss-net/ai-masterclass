@@ -237,8 +237,8 @@ clean-venv:
 # Clean database
 .PHONY: clean-db
 clean-db:
-	dropdb ai_masterclass
-	createdb ai_masterclass
+	dropdb bosskit
+	createdb bosskit
 
 # Clean cache
 .PHONY: clean-cache
@@ -424,8 +424,8 @@ clean:
 # Clean database
 .PHONY: clean-db
 clean-db:
-	dropdb ai_masterclass
-	createdb ai_masterclass
+	dropdb bosskit
+	createdb bosskit
 
 # Clean cache
 .PHONY: clean-cache
@@ -507,13 +507,13 @@ db-init:
 # Backup database
 .PHONY: db-backup
 db-backup:
-	pg_dump ai_masterclass > backups/$(shell date +%Y%m%d_%H%M%S).sql
+	pg_dump bosskit > backups/$(shell date +%Y%m%d_%H%M%S).sql
 
 # Restore database
 .PHONY: db-restore
 db-restore:
 	ifneq "$(BACKUP_FILE)" ""
-		pg_restore -d ai_masterclass $(BACKUP_FILE)
+		pg_restore -d bosskit $(BACKUP_FILE)
 	endif
 
 # Build container

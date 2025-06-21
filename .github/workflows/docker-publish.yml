@@ -25,7 +25,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: boss-net/ai-masterclass
+        images: boss-net/bosskit
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5

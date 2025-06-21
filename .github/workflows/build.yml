@@ -34,9 +34,9 @@ jobs:
         context: .
         push: false
         tags: |
-          boss-net/ai-masterclass:latest
-          boss-net/ai-masterclass:${{ github.sha }}
-        cache-from: type=registry,ref=boss-net/ai-masterclass:latest
+          boss-net/bosskit:latest
+          boss-net/bosskit:${{ github.sha }}
+        cache-from: type=registry,ref=boss-net/bosskit:latest
         cache-to: type=inline
         build-args: |
           BUILD_DATE=${{ github.event.head_commit.timestamp }}

@@ -30,4 +30,4 @@ COPY . .
 RUN pip install --no-cache-dir .
 
 # Default command
-CMD ["python", "-m", "ai_masterclass"]
+CMD ["python", "-m", "bosskit"]
