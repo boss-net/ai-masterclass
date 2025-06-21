@@ -1,0 +1,16 @@
+# Core dependencies
+asana==5.0.0                # Asana API for task management
+openai==1.10.0              # OpenAI API client for GPT models
+python-dotenv==0.13.0       # Loads environment variables from .env
+
+# LangChain ecosystem
+langchain==0.2.6            # Main LangChain library
+langchain-anthropic==0.1.16 # Anthropic model integration for LangChain
+langchain-community==0.2.6  # Community-contributed LangChain tools
+langchain-core==0.2.10      # LangChain core components
+langchain-openai==0.1.10    # OpenAI integration for LangChain
+
+# Optional: Add testing and linting tools for development
+# pytest==8.2.0             # Uncomment for unit testing support
+# black==24.4.2             # Uncomment for code formatting
+# flake8==7.0.0             # Uncomment for linting
