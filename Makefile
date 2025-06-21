@@ -1,13 +1,23 @@
 .PHONY: install test lint format check clean docs serve monitor benchmark deploy help container db env perf venv
 
+# Virtual environment variables
+VENV := .venv
+PYTHON := $(VENV)/bin/python
+PIP := $(PYTHON) -m pip
+
 # Default target
 all: install
 
+# Primary install alias (maps to development dependencies target)
+install: install-dev
+
 # Create virtual environment
 venv:
-	test -d .venv || python3 -m venv .venv
-	@echo "Virtual environment created at .venv"
-	@echo "Activate with: source .venv/bin/activate"
+	test -d $(VENV) || python3 -m venv $(VENV)
+	$(PYTHON) -m ensurepip --upgrade
+	$(PYTHON) -m pip install --upgrade pip setuptools wheel
+	@echo "Virtual environment ready at $(VENV)"
+	@echo "Activate with: source $(VENV)/bin/activate"
 
 # Show help (default target)
 help:
@@ -58,20 +68,20 @@ activate:
 install-dev:
 	$(MAKE) venv
 	@echo "Installing development dependencies..."
-	.venv/bin/pip install -e .
-	.venv/bin/pip install -r requirements-dev.txt
+	$(PIP) install -e .
+	$(PIP) install -r requirements-dev.txt
 
 # Install production dependencies
 install-prod:
 	$(MAKE) venv
 	@echo "Installing production dependencies..."
-	.venv/bin/pip install -r requirements.txt
+	$(PIP) install -r requirements.txt
 
 # Install test dependencies
 install-test:
 	$(MAKE) venv
 	@echo "Installing test dependencies..."
-	.venv/bin/pip install -r requirements-test.txt
+	$(PIP) install -r requirements-test.txt
 
 # Install all dependencies
 install-all:
@@ -84,7 +94,7 @@ install-env:
 	ifneq "$(ENV)" ""
 		$(MAKE) venv
 		@echo "Installing environment dependencies for $(ENV)..."
-		.venv/bin/pip install -r requirements-$(ENV).txt
+		$(PIP) install -r requirements-$(ENV).txt
 	endif
 
 # Format code
@@ -153,7 +163,7 @@ load-test:
 docs:
 	$(MAKE) install-dev
 	@echo "Generating documentation..."
-	.venv/bin/pip install -r requirements-dev.txt
+	$(PIP) install -r requirements-dev.txt
 	.venv/bin/pip install sphinx sphinx-rtd-theme
 	sphinx-apidoc -o docs/ src/
 	cd docs && make html
@@ -443,7 +453,7 @@ clean-logs:
 docs:
 	$(MAKE) venv
 	@echo "Generating documentation..."
-	.venv/bin/pip install -r requirements-dev.txt
+	$(PIP) install -r requirements-dev.txt
 	.venv/bin/pip install sphinx sphinx-rtd-theme
 	sphinx-apidoc -o docs/ src/
 	cd docs && make html

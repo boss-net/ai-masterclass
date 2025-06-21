@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Masterclass Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/plotly.js@2.16.3/dist/plotly.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.16.3/dist/plotly.min.js"></script>
+    <style>
+        .dashboard {
+            padding: 20px;
+        }
+        .chart-container {
+            margin-bottom: 20px;
+        }
+        .alert-card {
+            margin-bottom: 15px;
+        }
+        .metrics-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="mt-4">AI Masterclass Monitoring</h1>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <!-- Loading state -->
+            <div class="text-center" id="loading">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Table -->
+        <div class="metrics-table">
+            <h3>Current Metrics</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="metrics-body">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Alert History -->
+        <div class="alert-history">
+            <h3>Alert History</h3>
+            <div class="filters mb-3">
+                <select id="alert-level" class="form-select me-2">
+                    <option value="">All Levels</option>
+                    <option value="warning">Warning</option>
+                    <option value="critical">Critical</option>
+                </select>
+                <select id="alert-metric" class="form-select me-2">
+                    <option value="">All Metrics</option>
+                </select>
+                <select id="alert-source" class="form-select">
+                    <option value="">All Sources</option>
+                </select>
+            </div>
+            <div id="alert-stats" class="alert-stats mb-3">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+            <div id="alerts-container" class="alerts-container">
+                <!-- Alerts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let dashboardInterval;
+        let metricsInterval;
+        let alertsInterval;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start intervals
+            dashboardInterval = setInterval(updateDashboard, 30000); // 30 seconds
+            metricsInterval = setInterval(updateMetrics, 10000); // 10 seconds
+            alertsInterval = setInterval(updateAlerts, 60000); // 60 seconds
+
+            // Initial updates
+            updateDashboard();
+            updateMetrics();
+            updateAlerts();
+
+            // Add filter event listeners
+            document.getElementById('alert-level').addEventListener('change', updateAlerts);
+            document.getElementById('alert-metric').addEventListener('change', updateAlerts);
+            document.getElementById('alert-source').addEventListener('change', updateAlerts);
+        });
+
+        // Update dashboard
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/api/dashboard');
+                const html = await response.text();
+                document.getElementById('dashboard').innerHTML = html;
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
+        }
+
+        // Update metrics
+        async function updateMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                const metrics = await response.json();
+                updateMetricsTable(metrics);
+            } catch (error) {
+                console.error('Error updating metrics:', error);
+            }
+        }
+
+        // Update metrics table
+        function updateMetricsTable(metrics) {
+            const tbody = document.getElementById('metrics-body');
+            tbody.innerHTML = metrics.map(metric => `
+                <tr>
+                    <td>${metric.name}</td>
+                    <td>${metric.value}</td>
+                    <td>${metric.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update alerts
+        async function updateAlerts() {
+            try {
+                const params = new URLSearchParams({
+                    level: document.getElementById('alert-level').value,
+                    metric: document.getElementById('alert-metric').value,
+                    source: document.getElementById('alert-source').value
+                });
+
+                const response = await fetch(`/api/alerts?${params}`);
+                const alerts = await response.json();
+                updateAlertsContainer(alerts);
+
+                // Update alert stats
+                const statsResponse = await fetch('/api/alerts/stats');
+                const stats = await statsResponse.json();
+                updateAlertStats(stats);
+            } catch (error) {
+                console.error('Error updating alerts:', error);
+            }
+        }
+
+        // Update alerts container
+        function updateAlertsContainer(alerts) {
+            const container = document.getElementById('alerts-container');
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert-card card ${alert.resolved ? 'bg-light' : 'bg-warning'}">
+                    <div class="card-body">
+                        <h5 class="card-title">${alert.level.toUpperCase()} Alert</h5>
+                        <p class="card-text">
+                            <strong>Metric:</strong> ${alert.metric}<br>
+                            <strong>Value:</strong> ${alert.value}<br>
+                            <strong>Source:</strong> ${alert.source}<br>
+                            <strong>Nodes:</strong> ${alert.nodes.join(', ')}<br>
+                            <strong>Timestamp:</strong> ${alert.timestamp}<br>
+                            ${alert.resolved ? `
+                                <strong>Resolved:</strong> ${alert.resolution_timestamp}<br>
+                            ` : ''}
+                        </p>
+                        ${!alert.resolved ? `
+                            <button class="btn btn-success" onclick="resolveAlert(${alert.id})">
+                                Resolve Alert
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update alert stats
+        function updateAlertStats(stats) {
+            const container = document.getElementById('alert-stats');
+            container.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Alerts</h5>
+                                <p class="card-text">${stats.total_alerts}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Resolved Alerts</h5>
+                                <p class="card-text">${stats.resolved_alerts}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Alert Levels</h5>
+                                <ul class="list-group">
+                                    ${Object.entries(stats.level_stats).map(([level, count]) => `
+                                        <li class="list-group-item">
+                                            ${level}: ${count}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Resolve alert
+        async function resolveAlert(alertId) {
+            try {
+                const response = await fetch(`/api/alerts/${alertId}/resolve`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    updateAlerts();
+                }
+            } catch (error) {
+                console.error('Error resolving alert:', error);
+            }
+        }
+    </script>
+</body>
+</html>

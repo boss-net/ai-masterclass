@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Load common utilities
+. "$(dirname "$(realpath "$0")")/utils.sh"
+
+# Initialize project and ensure uv is installed
+ensure_uv
+init_uv_project
+
+# Run ruff with detailed output and configuration
+echo "Running ruff code formatting..."
+run_uv "uv run --directory . --dev ruff check --fix ./ --config pyproject.toml"
+
+# Run black formatter
+echo "Running black formatter..."
+run_uv "uv run --directory . --dev black . --check"
+
+# Run isort for import sorting
+echo "Running isort..."
+run_uv "uv run --directory . --dev isort . --check-only"
+
+# run black formatter
+uv run --directory . --dev black .
+
+# run isort formatter
+uv run --directory . --dev isort .
+
+# run mypy check
+dev/mypy-check

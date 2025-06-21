@@ -1,0 +1,38 @@
+# -------------------------------
+# AI Agents Masterclass - RAG Agent Requirements
+# -------------------------------
+
+# Core dependencies
+asana==5.0.7
+openai>=1.10.0,<2.0.0
+python-dotenv==0.13.0
+
+# LangChain and integrations
+langchain==0.2.12
+langchain-core>=0.2.27,<0.3.0
+langchain-community==0.2.11
+
+# NOTE: langchain-chroma uses chromadb which requires onnxruntime,
+# which doesn't have Python 3.13-compatible wheels.
+# You can enable this ONLY if using Python ≤ 3.12.
+# langchain-chroma>=0.1.2,<0.3.0
+
+langchain-huggingface>=0.0.3,<0.3.0
+langchain-anthropic>=0.1.22,<0.3.0
+langchain-openai>=0.1.22,<0.3.0
+
+# UI
+streamlit==1.36.0
+
+# Document Processing
+pdfminer.six==20240706
+unstructured[all-docs]
+
+# === Development & Testing Tools ===
+# (Uncomment below if needed during development)
+# pytest==8.2.0
+# black==24.4.2
+# flake8==7.0.0
+
+# === Python Version Pinning ===
+# Requires-Python >=3.9
