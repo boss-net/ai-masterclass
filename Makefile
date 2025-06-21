@@ -104,7 +104,7 @@ format:
 	$(MAKE) install-dev
 	@echo "Formatting code..."
 	.venv/bin/isort .
-	.venv/bin/black .
+	.venv/bin/black --target-version py311 .
 
 # Lint code
 .PHONY: lint
@@ -114,7 +114,7 @@ lint:
 	.venv/bin/flake8 .
 	.venv/bin/mypy .
 	.venv/bin/isort --check-only .
-	.venv/bin/black --check .
+	.venv/bin/black --target-version py311 --check .
 
 # Style check
 .PHONY: style-check
@@ -398,8 +398,8 @@ lint:
 format:
 	$(MAKE) install-dev
 	@echo "Formatting code..."
-	.venv/bin/isort .
-	.venv/bin/black .
+	.venv/bin/isort --python-version=3.11 .
+	.venv/bin/black --target-version=py311 .
 
 # Lint code
 .PHONY: lint
