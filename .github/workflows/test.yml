@@ -25,7 +25,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest --cov=.
+        PYTHONPATH=$(pwd) pytest --cov=.
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
