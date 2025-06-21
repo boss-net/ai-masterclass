@@ -4,6 +4,7 @@
 VENV := .venv
 PYTHON := $(VENV)/bin/python
 PIP := $(PYTHON) -m pip
+REQ_DIR := requirements
 
 # Default target
 all: install
@@ -69,19 +70,19 @@ install-dev:
 	$(MAKE) venv
 	@echo "Installing development dependencies..."
 	$(PIP) install -e .
-	$(PIP) install -r requirements-dev.txt
+	$(PIP) install -r $(REQ_DIR)/requirements-dev.txt
 
 # Install production dependencies
 install-prod:
 	$(MAKE) venv
 	@echo "Installing production dependencies..."
-	$(PIP) install -r requirements.txt
+	$(PIP) install -r $(REQ_DIR)/requirements.txt
 
 # Install test dependencies
 install-test:
 	$(MAKE) venv
 	@echo "Installing test dependencies..."
-	$(PIP) install -r requirements-test.txt
+	$(PIP) install -r $(REQ_DIR)/requirements-test.txt
 
 # Install all dependencies
 install-all:
@@ -94,7 +95,7 @@ install-env:
 	ifneq "$(ENV)" ""
 		$(MAKE) venv
 		@echo "Installing environment dependencies for $(ENV)..."
-		$(PIP) install -r requirements-$(ENV).txt
+		$(PIP) install -r $(REQ_DIR)/requirements-$(ENV).txt
 	endif
 
 # Format code
@@ -163,7 +164,7 @@ load-test:
 docs:
 	$(MAKE) install-dev
 	@echo "Generating documentation..."
-	$(PIP) install -r requirements-dev.txt
+	$(PIP) install -r $(REQ_DIR)/requirements-dev.txt
 	.venv/bin/pip install sphinx sphinx-rtd-theme
 	sphinx-apidoc -o docs/ src/
 	cd docs && make html
@@ -453,7 +454,7 @@ clean-logs:
 docs:
 	$(MAKE) venv
 	@echo "Generating documentation..."
-	$(PIP) install -r requirements-dev.txt
+	$(PIP) install -r $(REQ_DIR)/requirements-dev.txt
 	.venv/bin/pip install sphinx sphinx-rtd-theme
 	sphinx-apidoc -o docs/ src/
 	cd docs && make html
