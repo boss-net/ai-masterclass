@@ -4,7 +4,7 @@
 
 # Core dependencies
 asana==5.0.7                # Asana API Python client
-openai==1.10.0              # OpenAI API client
+openai>=1.10.0,<2.0.0              # OpenAI API client
 python-dotenv==0.13.0       # Load environment variables from .env files
 
 # LangChain and integrations
@@ -14,7 +14,7 @@ langchain-community==0.2.11    # Community-contributed LangChain tools
 langchain-chroma==0.1.2        # Chroma vectorstore integration for LangChain
 langchain-huggingface==0.0.3   # Hugging Face integration for LangChain
 langchain-anthropic==0.1.22    # Anthropic model integration for LangChain
-langchain-openai==0.1.20       # OpenAI integration for LangChain
+langchain-openai==0.1.22       # OpenAI integration for LangChain
 
 # UI
 streamlit==1.36.0           # Web app framework for Python
