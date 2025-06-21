@@ -1,4 +1,4 @@
-name: Build
+name: Build and Docker Build
 
 on:
   push:
@@ -27,3 +27,18 @@ jobs:
       run: |
         pip install black
         black --check .
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: |
+          boss-net/ai-masterclass:latest
+          boss-net/ai-masterclass:${{ github.sha }}
+        cache-from: type=registry,ref=boss-net/ai-masterclass:latest
+        cache-to: type=inline
+        build-args: |
+          BUILD_DATE=${{ github.event.head_commit.timestamp }}
+          VCS_REF=${{ github.sha }}
+          VERSION=${{ github.event.head_commit.message }}
