@@ -1,0 +1,28 @@
+# -------------------------------
+# AI Agents Masterclass - Requirements
+# -------------------------------
+
+# Core dependencies
+asana==5.0.7                # Asana API Python client
+openai==1.10.0              # OpenAI API client
+python-dotenv==0.13.0       # Load environment variables from .env files
+
+# LangChain and integrations
+langchain==0.2.6            # Main LangChain library
+langchain-core==0.2.10      # LangChain core components
+langchain-community==0.2.6  # Community-contributed LangChain tools
+langchain-anthropic==0.1.16 # Anthropic model integration for LangChain
+langchain-openai==0.1.10    # OpenAI integration for LangChain
+
+# UI
+streamlit==1.36.0           # Web app framework for Python
+
+# === [OPTIONAL] Development & Testing Tools ===
+# Add these to a separate requirements-dev.txt for development environments
+# pytest==8.2.0             # For running unit tests
+# black==24.4.2             # For code formatting
+# flake8==7.0.0             # For linting
+
+# === [OPTIONAL] Python Version Pinning ===
+# If required, specify a minimum Python version at the top:
+# Requires-Python >=3.9
