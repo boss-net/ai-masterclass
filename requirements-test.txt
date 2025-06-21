@@ -1,0 +1,16 @@
+pytest==7.4.0
+pytest-cov==4.1.0
+pytest-mock==3.11.1
+pytest-asyncio==0.21.1
+pytest-xdist==3.3.1
+coverage==7.3.2
+mock==5.1.0
+responses==0.23.3
+pytest-timeout==2.1.0
+pytest-benchmark==3.4.1
+pytest-html==4.0.0
+pytest-metadata==3.0.0
+pytest-repeat==0.9.1
+pytest-rerunfailures==11.1.1
+pytest-random-order==1.0.7
+pytest-lazy-fixture==0.6.3

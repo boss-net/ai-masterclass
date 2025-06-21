@@ -1,0 +1,9 @@
+{
+    "webhook_url": "https://api.example.com/monitoring/alerts",
+    "headers": {
+        "Authorization": "Bearer your-api-token",
+        "Content-Type": "application/json"
+    },
+    "retry_count": 3,
+    "retry_delay": 5
+}

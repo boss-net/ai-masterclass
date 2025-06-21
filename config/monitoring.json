@@ -1,0 +1,84 @@
+{
+    "metrics": {
+        "collection_interval": 5,
+        "cpu": {
+            "enabled": true,
+            "thresholds": [
+                {
+                    "operator": ">",
+                    "value": 90,
+                    "duration": 60,
+                    "level": "critical"
+                },
+                {
+                    "operator": ">",
+                    "value": 80,
+                    "duration": 30,
+                    "level": "warning"
+                }
+            ]
+        },
+        "memory": {
+            "enabled": true,
+            "thresholds": [
+                {
+                    "operator": ">",
+                    "value": 8589934592,
+                    "duration": 60,
+                    "level": "warning"
+                },
+                {
+                    "operator": ">",
+                    "value": 17179869184,
+                    "duration": 30,
+                    "level": "critical"
+                }
+            ]
+        },
+        "disk": {
+            "enabled": true,
+            "thresholds": [
+                {
+                    "operator": ">",
+                    "value": 90,
+                    "duration": 60,
+                    "level": "warning"
+                },
+                {
+                    "operator": ">",
+                    "value": 95,
+                    "duration": 30,
+                    "level": "critical"
+                }
+            ]
+        }
+    },
+    "notifications": {
+        "providers": [
+            "email",
+            "slack",
+            "webhook"
+        ],
+        "retry_count": 3,
+        "retry_delay": 5
+    },
+    "dashboard": {
+        "update_interval": 60,
+        "output_format": "html",
+        "output_path": "./dashboards",
+        "charts": {
+            "cpu": {
+                "type": "line",
+                "interval": "1m"
+            },
+            "memory": {
+                "type": "bar",
+                "interval": "5m"
+            },
+            "disk": {
+                "type": "pie",
+                "interval": "15m"
+            }
+        }
+    }
+}

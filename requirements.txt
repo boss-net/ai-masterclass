@@ -1,0 +1,55 @@
+
+# --- Document Processing ---
+# --- Environment Management ---
+# --- LangChain Ecosystem ---
+# --- Streamlit UI ---
+# -------------------------------
+# === [OPTIONAL] Development & Testing Tools (uncomment as needed) ===
+# === [OPTIONAL] Development & Testing Tools ===
+# === [OPTIONAL] Python Version Pinning ===
+# ===============================
+# AI Agents Masterclass - RAG Agent Requirements
+# AI Agents Masterclass - Requirements
+# Add these to a separate requirements-dev.txt for development environments
+# Core dependencies
+# If required, specify a minimum Python version at the top:
+# LangChain and integrations
+# LangChain ecosystem
+# Optional: Add testing and linting tools for development
+# Requires-Python >=3.9
+# UI
+# black==24.4.2                 # Code formatter
+# black==24.4.2             # For code formatting
+# black==24.4.2             # Uncomment for code formatting
+# flake8==7.0.0                 # Linter
+# flake8==7.0.0             # For linting
+# flake8==7.0.0             # Uncomment for linting
+# pytest==8.2.0                 # Unit testing framework
+# pytest==8.2.0             # For running unit tests
+# pytest==8.2.0             # Uncomment for unit testing support
+asana==5.0.0
+asana==5.0.0                # Asana API for task management
+asana==5.0.7                # Asana API Python client
+langchain-anthropic==0.1.16 # Anthropic model integration for LangChain
+langchain-anthropic==0.1.22    # Anthropic model integration for LangChain
+langchain-chroma==0.1.2        # Chroma vectorstore integration for LangChain
+langchain-community==0.2.11    # Community-contributed LangChain tools
+langchain-community==0.2.6  # Community-contributed LangChain tools
+langchain-core==0.2.10      # LangChain core components
+langchain-core==0.2.28         # Core components for LangChain
+langchain-huggingface==0.0.3   # Hugging Face integration for LangChain
+langchain-openai==0.1.10    # OpenAI integration for LangChain
+langchain-openai==0.1.20       # OpenAI integration for LangChain
+langchain==0.2.12              # Main LangChain library
+langchain==0.2.6            # Main LangChain library
+openai==1.10.0
+openai==1.10.0              # OpenAI API client
+openai==1.10.0              # OpenAI API client for GPT models
+pdfminer.six==20240706          # PDF parsing and text extraction
+python-dotenv==0.13.0
+python-dotenv==0.13.0          # Load environment variables from .env files
+python-dotenv==0.13.0       # Load environment variables from .env files
+python-dotenv==0.13.0       # Loads environment variables from .env
+streamlit==1.36.0              # Fast web app framework
+streamlit==1.36.0           # Web app framework for Python
+unstructured[all-docs]          # Versatile document loader/cleaner for various file types
