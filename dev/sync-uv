@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Load common utilities
+. "$(dirname "$(realpath "$0")")/utils.sh"
+
+# Initialize project and ensure uv is installed
+ensure_uv
+init_uv_project
+
+# Sync dependencies with detailed output
+echo "Syncing dependencies..."
+run_uv "uv sync --project bosskit --verbose"
+
+# Show installed packages
+echo "\nInstalled packages:"
+run_uv "uv list --project bosskit"
+
+# check uv.lock in sync with pyproject.toml
+uv lock --project bosskit

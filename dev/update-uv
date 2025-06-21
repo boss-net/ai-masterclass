@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Update dependencies in bosskit project using uv
+set -e
+set -o pipefail
+
+# Load common utilities
+. "$(dirname "$(realpath "$0")")/utils.sh"
+
+# Initialize project and ensure uv is installed
+ensure_uv
+init_uv_project
+
+# Update dependencies with detailed output
+run_uv "uv lock --project bosskit --upgrade --verbose"
+
+# Check lockfile sync
+run_uv "uv lock --project bosskit --check"
+
+# Show dependency graph
+run_uv "uv depgraph --project bosskit --output-format text"
+
+# Show outdated packages
+echo "Checking for outdated packages..."
+run_uv "uv outdated --project bosskit"
