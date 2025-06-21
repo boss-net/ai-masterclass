@@ -1,0 +1,30 @@
+# ===============================
+# AI Agents Masterclass - RAG Agent Requirements
+# ===============================
+
+# --- Environment Management ---
+python-dotenv==0.13.0          # Load environment variables from .env files
+
+# --- LangChain Ecosystem ---
+langchain==0.2.12              # Main LangChain library
+langchain-core==0.2.28         # Core components for LangChain
+langchain-community==0.2.11    # Community-contributed LangChain tools
+langchain-chroma==0.1.2        # Chroma vectorstore integration for LangChain
+langchain-huggingface==0.0.3   # Hugging Face integration for LangChain
+langchain-anthropic==0.1.22    # Anthropic model integration for LangChain
+langchain-openai==0.1.20       # OpenAI integration for LangChain
+
+# --- Streamlit UI ---
+streamlit==1.36.0              # Fast web app framework
+
+# --- Document Processing ---
+pdfminer.six==20240706          # PDF parsing and text extraction
+unstructured[all-docs]          # Versatile document loader/cleaner for various file types
+
+# === [OPTIONAL] Development & Testing Tools (uncomment as needed) ===
+# pytest==8.2.0                 # Unit testing framework
+# black==24.4.2                 # Code formatter
+# flake8==7.0.0                 # Linter
+
+# === [OPTIONAL] Python Version Pinning ===
+# Requires-Python >=3.9
