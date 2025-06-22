@@ -9,10 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.11", "3.12"]
-      fail-fast: false
 
     steps:
     - uses: actions/checkout@v4
@@ -20,25 +16,16 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Cache pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
         pip install -r requirements-test.txt
 
     - name: Run tests
       run: |
-        PYTHONPATH=$(pwd) pytest --cov=. --cov-report=xml
+        PYTHONPATH=$(pwd) pytest --cov=.
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5

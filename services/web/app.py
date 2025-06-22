@@ -3,7 +3,6 @@ import logging
 from flask import Flask, jsonify, request  # type: ignore
 from monitoring.alert_history import AlertHistory
 from monitoring.monitor import Monitor
-
 from visualization.dashboard import Dashboard
 
 logger = logging.getLogger(__name__)
