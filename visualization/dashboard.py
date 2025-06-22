@@ -1,8 +1,5 @@
 import logging
-from datetime import datetime
-from typing import Any, Dict, List
-
-import plotly.graph_objects as go
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +11,7 @@ class Dashboard:
         self.metrics = []
         self.alerts = []
 
-    def add_chart(self, chart: "Chart"):
+    def add_chart(self, chart):  # Removed type hint to avoid undefined 'Chart'
         """Add a chart to the dashboard."""
         self.charts.append(chart)
 
@@ -52,7 +49,7 @@ class Dashboard:
         # Add charts
         for i, chart in enumerate(self.charts):
             html += f"<div id='chart{i}'></div>"
-            html += f"<script>var plot{i} = {chart.to_json()}; Plotly.newPlot('chart{i}', plot{i});</script>"
+            html += f"<script>var plot{i} = {chart.to_json()}; " f"Plotly.newPlot('chart{i}', plot{i});</script>"
 
         # Add metrics
         html += "<h2>Metrics</h2>"

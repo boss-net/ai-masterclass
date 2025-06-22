@@ -76,13 +76,9 @@ class AutoCompleter(Completer):
                 rel_fnames = self.fname_to_rel_fnames.get(word_match, [])
                 if rel_fnames:
                     for rel_fname in rel_fnames:
-                        yield Completion(
-                            f"`{rel_fname}`", start_position=-len(last_word), display=rel_fname
-                        )
+                        yield Completion(f"`{rel_fname}`", start_position=-len(last_word), display=rel_fname)
                 else:
-                    yield Completion(
-                        word_insert, start_position=-len(last_word), display=word_match
-                    )
+                    yield Completion(word_insert, start_position=-len(last_word), display=word_match)
 
 
 class InputOutput:

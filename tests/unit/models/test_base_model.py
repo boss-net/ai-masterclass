@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from pathlib import Path
 
 import pytest
 
@@ -7,30 +7,22 @@ from bosskit.models.base import BaseModel, ModelMessage, ModelSettings
 
 @pytest.fixture
 def base_model():
-    settings = ModelSettings(
-        name="test-model",
-        edit_format="whole",
-        use_repo_map=True
-    )
+    settings = ModelSettings(name="test-model", edit_format="whole", use_repo_map=True)
     return BaseModel(settings)
 
+
 def test_model_settings():
-    settings = ModelSettings(
-        name="test-model",
-        edit_format="whole",
-        use_repo_map=True
-    )
+    settings = ModelSettings(name="test-model", edit_format="whole", use_repo_map=True)
     assert settings.name == "test-model"
     assert settings.edit_format == "whole"
     assert settings.use_repo_map is True
 
+
 def test_model_message():
-    message = ModelMessage(
-        role="user",
-        content="test message"
-    )
+    message = ModelMessage(role="user", content="test message")
     assert message.role == "user"
     assert message.content == "test message"
+
 
 def test_abstract_methods(base_model):
     with pytest.raises(NotImplementedError):

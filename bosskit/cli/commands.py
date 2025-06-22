@@ -155,10 +155,7 @@ class Commands:
             return
 
         if self.coder.repo.is_dirty():
-            self.io.tool_error(
-                "The repository has uncommitted changes. Please commit or stash them before"
-                " undoing."
-            )
+            self.io.tool_error("The repository has uncommitted changes. Please commit or stash them before" " undoing.")
             return
 
         local_head = self.coder.repo.git.rev_parse("HEAD")
@@ -171,17 +168,11 @@ class Commands:
 
         if has_origin:
             if local_head == remote_head:
-                self.io.tool_error(
-                    "The last commit has already been pushed to the origin. Undoing is not"
-                    " possible."
-                )
+                self.io.tool_error("The last commit has already been pushed to the origin. Undoing is not" " possible.")
                 return
 
         last_commit = self.coder.repo.head.commit
-        if (
-            not last_commit.message.startswith("bosskit:")
-            or last_commit.hexsha[:7] != self.coder.last_bosskit_commit_hash
-        ):
+        if not last_commit.message.startswith("bosskit:") or last_commit.hexsha[:7] != self.coder.last_bosskit_commit_hash:
             self.io.tool_error("The last commit was not made by bosskit in this chat session.")
             return
         self.coder.repo.git.reset("--hard", "HEAD~1")
@@ -228,15 +219,10 @@ class Commands:
             if not matched_files:
                 if self.coder.repo is not None:
                     create_file = self.io.confirm_ask(
-                        (
-                            f"No files matched '{word}'. Do you want to create the file and add it"
-                            " to git?"
-                        ),
+                        (f"No files matched '{word}'. Do you want to create the file and add it" " to git?"),
                     )
                 else:
-                    create_file = self.io.confirm_ask(
-                        f"No files matched '{word}'. Do you want to create the file?"
-                    )
+                    create_file = self.io.confirm_ask(f"No files matched '{word}'. Do you want to create the file?")
 
                 if create_file:
                     (Path(self.coder.root) / word).touch()
@@ -284,9 +270,7 @@ class Commands:
 
         for word in args.split():
             matched_files = [
-                file
-                for file in self.coder.abs_fnames
-                if word.lower() in os.path.relpath(file, self.coder.root).lower()
+                file for file in self.coder.abs_fnames if word.lower() in os.path.relpath(file, self.coder.root).lower()
             ]
             if not matched_files:
                 self.io.tool_error(f"No files matched '{word}'")
@@ -300,9 +284,7 @@ class Commands:
         "Run a shell command and optionally add the output to the chat"
         try:
             parsed_args = shlex.split(args)
-            result = subprocess.run(
-                parsed_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-            )
+            result = subprocess.run(parsed_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
             combined_output = result.stdout
         except Exception as e:
             self.io.tool_error(f"Error running command: {e}")

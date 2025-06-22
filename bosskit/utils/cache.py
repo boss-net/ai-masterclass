@@ -8,12 +8,7 @@ from typing import Any, Callable, Optional, Union
 
 
 class Cache:
-    def __init__(
-        self,
-        cache_dir: str = None,
-        ttl: int = 3600,
-        max_size: int = 100000000  # 100MB
-    ):
+    def __init__(self, cache_dir: str = None, ttl: int = 3600, max_size: int = 100000000):  # 100MB
         """Initialize the cache.
 
         Args:
@@ -21,7 +16,7 @@ class Cache:
             ttl: Time-to-live in seconds
             max_size: Maximum cache size in bytes
         """
-        self.cache_dir = Path(cache_dir or os.path.expanduser('~/.bosskit/cache'))
+        self.cache_dir = Path(cache_dir or os.path.expanduser("~/.bosskit/cache"))
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.ttl = ttl
         self.max_size = max_size
@@ -37,9 +32,7 @@ class Cache:
         Returns:
             Unique cache key
         """
-        key = f"{func.__module__}.{func.__name__}" + \
-              json.dumps(args, sort_keys=True) + \
-              json.dumps(kwargs, sort_keys=True)
+        key = f"{func.__module__}.{func.__name__}" + json.dumps(args, sort_keys=True) + json.dumps(kwargs, sort_keys=True)
         return hashlib.sha256(key.encode()).hexdigest()
 
     def _get_cache_file(self, key: str) -> Path:
@@ -74,21 +67,18 @@ class Cache:
         Returns:
             Total cache size in bytes
         """
-        return sum(f.stat().st_size for f in self.cache_dir.glob('*.cache'))
+        return sum(f.stat().st_size for f in self.cache_dir.glob("*.cache"))
 
     def _cleanup(self):
         """Clean up expired and excess cache entries."""
         # Remove expired entries
-        for cache_file in self.cache_dir.glob('*.cache'):
+        for cache_file in self.cache_dir.glob("*.cache"):
             if self._is_expired(cache_file):
                 cache_file.unlink()
 
         # Remove excess entries if cache is too large
         while self._get_cache_size() > self.max_size:
-            oldest_file = min(
-                self.cache_dir.glob('*.cache'),
-                key=lambda f: f.stat().st_mtime
-            )
+            oldest_file = min(self.cache_dir.glob("*.cache"), key=lambda f: f.stat().st_mtime)
             oldest_file.unlink()
 
     def cache(self, ttl: Optional[int] = None):
@@ -100,6 +90,7 @@ class Cache:
         Returns:
             Decorated function
         """
+
         def decorator(func: Callable):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -109,9 +100,9 @@ class Cache:
                 # Check cache
                 if cache_file.exists() and not self._is_expired(cache_file):
                     try:
-                        with open(cache_file, 'r') as f:
+                        with open(cache_file, "r") as f:
                             data = json.load(f)
-                            return data['result']
+                            return data["result"]
                     except Exception:
                         pass
 
@@ -119,11 +110,8 @@ class Cache:
                 result = func(*args, **kwargs)
 
                 try:
-                    cache_data = {
-                        'timestamp': datetime.now().isoformat(),
-                        'result': result
-                    }
-                    with open(cache_file, 'w') as f:
+                    cache_data = {"timestamp": datetime.now().isoformat(), "result": result}
+                    with open(cache_file, "w") as f:
                         json.dump(cache_data, f)
 
                     self._cleanup()
@@ -137,11 +125,8 @@ class Cache:
             return decorator(ttl)
         return decorator
 
-def cache(
-    ttl: Union[int, Callable] = 3600,
-    cache_dir: Optional[str] = None,
-    max_size: int = 100000000
-):
+
+def cache(ttl: Union[int, Callable] = 3600, cache_dir: Optional[str] = None, max_size: int = 100000000):
     """Cache decorator factory.
 
     Args:
@@ -158,6 +143,7 @@ def cache(
         return cache_instance.cache()(ttl)
     return cache_instance.cache(ttl)
 
+
 def invalidate_cache(cache_key: str, cache_dir: Optional[str] = None) -> None:
     """Invalidate a specific cache entry.
 
@@ -165,9 +151,10 @@ def invalidate_cache(cache_key: str, cache_dir: Optional[str] = None) -> None:
         cache_key: Cache key to invalidate
         cache_dir: Cache directory
     """
-    cache_file = Path(cache_dir or os.path.expanduser('~/.bosskit/cache')) / f"{cache_key}.cache"
+    cache_file = Path(cache_dir or os.path.expanduser("~/.bosskit/cache")) / f"{cache_key}.cache"
     if cache_file.exists():
         cache_file.unlink()
+
 
 def clear_cache(cache_dir: Optional[str] = None) -> None:
     """Clear all cache entries.
@@ -175,6 +162,6 @@ def clear_cache(cache_dir: Optional[str] = None) -> None:
     Args:
         cache_dir: Cache directory
     """
-    cache_dir = Path(cache_dir or os.path.expanduser('~/.bosskit/cache'))
-    for cache_file in cache_dir.glob('*.cache'):
+    cache_dir = Path(cache_dir or os.path.expanduser("~/.bosskit/cache"))
+    for cache_file in cache_dir.glob("*.cache"):
         cache_file.unlink()

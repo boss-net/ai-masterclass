@@ -2,7 +2,6 @@ import logging
 import socket
 import threading
 import time
-from typing import Any, Dict
 
 from monitoring.collector import MetricCollector
 from monitoring.monitor import Monitor

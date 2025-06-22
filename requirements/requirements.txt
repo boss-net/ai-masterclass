@@ -6,6 +6,9 @@
 asana==5.0.7
 openai>=1.10.0,<2.0.0
 python-dotenv==0.13.0
+flask
+psutil
+aiohttp
 
 # LangChain and integrations
 langchain==0.2.12

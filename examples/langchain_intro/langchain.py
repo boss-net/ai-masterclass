@@ -28,9 +28,7 @@ ASANA_PROJECT_ID = os.getenv("ASANA_PROJECT_ID")
 ASANA_ACCESS_TOKEN = os.getenv("ASANA_ACCESS_TOKEN")
 
 if not ASANA_PROJECT_ID or not ASANA_ACCESS_TOKEN:
-    logging.warning(
-        "Missing ASANA_PROJECT_ID or ASANA_ACCESS_TOKEN in environment variables."
-    )
+    logging.warning("Missing ASANA_PROJECT_ID or ASANA_ACCESS_TOKEN in environment variables.")
 
 configuration = asana.Configuration()
 configuration.access_token = ASANA_ACCESS_TOKEN or ""
@@ -57,9 +55,7 @@ def create_asana_task(task_name: str, due_on: str = "today") -> str:
     if not ASANA_PROJECT_ID:
         return "Error: ASANA_PROJECT_ID is not set."
 
-    task_body = {
-        "data": {"name": task_name, "due_on": due_on, "projects": [ASANA_PROJECT_ID]}
-    }
+    task_body = {"data": {"name": task_name, "due_on": due_on, "projects": [ASANA_PROJECT_ID]}}
 
     try:
         api_response = tasks_api_instance.create_task(task_body, {})
@@ -106,11 +102,7 @@ def prompt_ai(messages, nested_calls=0):
                 messages.append(ToolMessage(tool_output, tool_call_id=tool_call["id"]))
             else:
                 logging.warning(f"Unknown tool requested: {tool_name}")
-                messages.append(
-                    ToolMessage(
-                        f"Unknown tool: {tool_name}", tool_call_id=tool_call["id"]
-                    )
-                )
+                messages.append(ToolMessage(f"Unknown tool: {tool_name}", tool_call_id=tool_call["id"]))
         # Recurse for further AI response
         return prompt_ai(messages, nested_calls + 1)
 

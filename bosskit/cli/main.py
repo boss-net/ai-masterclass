@@ -23,11 +23,7 @@ def get_git_root() -> t.Optional[str]:
         return None
 
 
-def main(
-    args: t.Optional[t.List[str]] = None,
-    input: t.Optional[t.TextIO] = None,
-    output: t.Optional[t.TextIO] = None
-) -> None:
+def main(args: t.Optional[t.List[str]] = None, input: t.Optional[t.TextIO] = None, output: t.Optional[t.TextIO] = None) -> None:
     """Main entry point for the bosskit command-line interface.
 
     Args:
@@ -66,10 +62,7 @@ def main(
         "--config",
         is_config_file=True,
         metavar="CONFIG_FILE",
-        help=(
-            "Specify the config file (default: search for .bosskit.conf.yml in git root or home"
-            " directory)"
-        ),
+        help=("Specify the config file (default: search for .bosskit.conf.yml in git root or home" " directory)"),
     )
 
     parser.add_argument(
@@ -78,12 +71,8 @@ def main(
         nargs="*",
         help="a list of source code files (optional)",
     )
-    default_input_history_file = (
-        os.path.join(git_root, ".bosskit.input.history") if git_root else ".bosskit.input.history"
-    )
-    default_chat_history_file = (
-        os.path.join(git_root, ".bosskit.chat.history.md") if git_root else ".bosskit.chat.history.md"
-    )
+    default_input_history_file = os.path.join(git_root, ".bosskit.input.history") if git_root else ".bosskit.input.history"
+    default_chat_history_file = os.path.join(git_root, ".bosskit.chat.history.md") if git_root else ".bosskit.chat.history.md"
 
     parser.add_argument(
         "--input-history-file",

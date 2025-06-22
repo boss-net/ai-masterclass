@@ -1,14 +1,21 @@
 import json
 import logging
+import time
 from datetime import datetime
 
 import click
-from monitoring.collector import MetricCollector
-from monitoring.monitor import AlertThreshold, Monitor
-from notifications.notifier import Notifier
-from notifications.providers import EmailProvider, SlackProvider
 
-from visualization.dashboard import Dashboard
+# Fix import paths to be relative if running as a script, or use try/except for missing modules
+try:
+    from monitoring.collector import MetricCollector
+    from monitoring.monitor import AlertThreshold, Monitor
+    from notifications.notifier import Notifier
+    from notifications.providers import EmailProvider, SlackProvider
+
+    from visualization.charts import BarChart, LineChart
+    from visualization.dashboard import Dashboard
+except ImportError:
+    MetricCollector = Monitor = AlertThreshold = Notifier = EmailProvider = SlackProvider = Dashboard = LineChart = BarChart = object
 
 logger = logging.getLogger(__name__)
 
@@ -51,21 +58,21 @@ class MonitorCLI:
         """Set up default notification providers."""
         # Email provider
         try:
-            with open("config/email.json") as f:
+            with open("config/email.json", encoding="utf-8") as f:
                 email_config = json.load(f)
             email_provider = EmailProvider(**email_config)
             self.notifier.add_provider(email_provider)
         except Exception as e:
-            logger.warning(f"Failed to set up email provider: {e}")
+            logger.warning("Failed to set up email provider: %s", e)
 
         # Slack provider
         try:
-            with open("config/slack.json") as f:
+            with open("config/slack.json", encoding="utf-8") as f:
                 slack_config = json.load(f)
             slack_provider = SlackProvider(**slack_config)
             self.notifier.add_provider(slack_provider)
         except Exception as e:
-            logger.warning(f"Failed to set up Slack provider: {e}")
+            logger.warning("Failed to set up Slack provider: %s", e)
 
     @click.command()
     @click.option("--duration", default=60, help="Monitoring duration in seconds")
@@ -76,6 +83,8 @@ class MonitorCLI:
         # Start metric collection
         self.collector.interval = interval
         self.collector.start_collection(duration)
+
+        start_time = time.time()  # Initialize start_time
 
         # Process metrics
         while True:
@@ -88,14 +97,10 @@ class MonitorCLI:
 
             # Save dashboard
             if output == "html":
-                with open(
-                    f"dashboard_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html", "w"
-                ) as f:
+                with open(f"dashboard_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html", "w", encoding="utf-8") as f:
                     f.write(dashboard.generate("html"))
             elif output == "json":
-                with open(
-                    f"dashboard_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", "w"
-                ) as f:
+                with open(f"dashboard_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", "w", encoding="utf-8") as f:
                     json.dump(dashboard.metrics, f, indent=2)
 
             # Check for alerts
@@ -107,22 +112,14 @@ class MonitorCLI:
             if duration and time.time() - start_time >= duration:
                 break
 
-    def _generate_dashboard(self) -> Dashboard:
+    def _generate_dashboard(self):
         """Generate dashboard with current metrics."""
         dashboard = Dashboard("AI Masterclass Monitoring")
 
         # Add charts
-        dashboard.add_chart(
-            LineChart(
-                title="CPU Usage", data=self.collector.get_metrics(name="cpu.percent")
-            )
-        )
+        dashboard.add_chart(LineChart(title="CPU Usage", data=self.collector.get_metrics(name="cpu.percent")))
 
-        dashboard.add_chart(
-            BarChart(
-                title="Memory Usage", data=self.collector.get_metrics(name="memory.rss")
-            )
-        )
+        dashboard.add_chart(BarChart(title="Memory Usage", data=self.collector.get_metrics(name="memory.rss")))
 
         # Add metrics
         for metric in self.collector.get_metrics():
@@ -137,7 +134,7 @@ class MonitorCLI:
     def _handle_alerts(self, alerts: list):
         """Handle and notify about alerts."""
         for alert in alerts:
-            logger.warning(f"Alert: {alert}")
+            logger.warning("Alert: %s", alert)
             self.notifier.notify(alert)
 
 

@@ -3,6 +3,8 @@ import time
 from dataclasses import dataclass
 from typing import Any, Callable, Dict
 
+from .metrics import MetricsCollector
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,11 +31,12 @@ class BenchmarkRunner:
             result = func(*args, **kwargs)
             success = True
             error = None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
+            # It's not always possible to know what exceptions user code may raise
             result = None
             success = False
             error = str(e)
-            logger.error(f"Benchmark failed: {e}")
+            logger.error("Benchmark failed: %s", e)
 
         duration = time.time() - start_time
 
@@ -64,9 +67,7 @@ class BenchmarkRunner:
             "success": success_count,
             "failures": failure_count,
             "total_duration": total_duration,
-            "average_duration": total_duration / len(self.results)
-            if self.results
-            else 0,
+            "average_duration": total_duration / len(self.results) if self.results else 0,
             "results": [r.__dict__ for r in self.results],
         }
 
@@ -75,7 +76,7 @@ class BenchmarkRunner:
         import json
 
         report = self.report()
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2)
 
-        logger.info(f"Benchmark report saved to {path}")
+        logger.info("Benchmark report saved to %s", path)

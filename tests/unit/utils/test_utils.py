@@ -2,8 +2,6 @@ import os
 import tempfile
 from datetime import datetime
 
-import pytest
-
 from bosskit.utils import (
     format_datetime,
     format_duration,
@@ -50,6 +48,7 @@ def test_file_operations():
     finally:
         os.unlink(tmp_path)
 
+
 def test_string_utils():
     # Test truncate_text
     assert truncate_text("short text", 10) == "short text"
@@ -79,6 +78,7 @@ def test_string_utils():
     finally:
         os.unlink(tmp_path)
 
+
 def test_system_utils():
     # Test get_system_info
     info = get_system_info()
@@ -103,6 +103,7 @@ def test_system_utils():
     assert "total" in disk
     assert "used" in disk
     assert "free" in disk
+
 
 def test_hash_functions():
     # Test get_file_hash with different algorithms

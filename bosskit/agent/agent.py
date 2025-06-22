@@ -84,10 +84,7 @@ class Coder:
         if not main_model.always_available:
             if not self.check_model_availability(main_model):
                 if main_model != models.GPT4:
-                    self.io.tool_error(
-                        f"API key does not support {main_model.name}, falling back to"
-                        f" {models.GPT35_16k.name}"
-                    )
+                    self.io.tool_error(f"API key does not support {main_model.name}, falling back to" f" {models.GPT35_16k.name}")
                 main_model = models.GPT35_16k
 
         self.main_model = main_model
@@ -98,9 +95,7 @@ class Coder:
         elif self.edit_format == "diff":
             self.gpt_prompts = editors.EditBlockPrompts()
         else:
-            raise ValueError(
-                f"Model {main_model} requesting unknown edit format {self.edit_format}"
-            )
+            raise ValueError(f"Model {main_model} requesting unknown edit format {self.edit_format}")
 
         self.io.tool_output(f"Model: {main_model.name}")
 
@@ -130,9 +125,7 @@ class Coder:
             if self.repo_map.use_ctags:
                 self.io.tool_output(f"Repo-map: universal-ctags using {map_tokens} tokens")
             elif not self.repo_map.has_ctags and map_tokens > 0:
-                self.io.tool_output(
-                    f"Repo-map: basic using {map_tokens} tokens (universal-ctags not found)"
-                )
+                self.io.tool_output(f"Repo-map: basic using {map_tokens} tokens (universal-ctags not found)")
             else:
                 self.io.tool_output("Repo-map: disabled because map_tokens == 0")
         else:
@@ -368,9 +361,7 @@ class Coder:
             # That wastes too much context window.
             self.cur_messages += [dict(role="assistant", content=content)]
         else:
-            self.cur_messages += [
-                dict(role="assistant", content=self.gpt_prompts.redacted_edit_message)
-            ]
+            self.cur_messages += [dict(role="assistant", content=self.gpt_prompts.redacted_edit_message)]
 
         if edited:
             if self.auto_commits:
@@ -502,9 +493,7 @@ class Coder:
                             show_resp = self.update_files_gpt35(self.resp, mode="diff")
                         except ValueError:
                             pass
-                    md = Markdown(
-                        show_resp, style=self.assistant_output_color, code_theme="default"
-                    )
+                    md = Markdown(show_resp, style=self.assistant_output_color, code_theme="default")
                     live.update(md)
                 else:
                     sys.stdout.write(text)
@@ -601,9 +590,7 @@ class Coder:
                 if not Path(full_path).exists():
                     question = f"Allow creation of new file {path}?"  # noqa: E501
                 else:
-                    question = (
-                        f"Allow edits to {path} which was not previously provided?"  # noqa: E501
-                    )
+                    question = f"Allow edits to {path} which was not previously provided?"  # noqa: E501
                 if not self.io.confirm_ask(question):
                     self.io.tool_error(f"Skipping edit to {path}")
                     continue
@@ -618,9 +605,7 @@ class Coder:
                 if self.repo:
                     tracked_files = set(self.repo.git.ls_files().splitlines())
                     relative_fname = self.get_rel_fname(full_path)
-                    if relative_fname not in tracked_files and self.io.confirm_ask(
-                        f"Add {path} to git?"
-                    ):
+                    if relative_fname not in tracked_files and self.io.confirm_ask(f"Add {path} to git?"):
                         self.repo.git.add(full_path)
 
             edited.add(path)
@@ -644,9 +629,7 @@ class Coder:
 
     def get_commit_message(self, diffs, context):
         if len(diffs) >= 4 * 1024 * 4:
-            self.io.tool_error(
-                f"Diff is too large for {models.GPT35.name} to generate a commit message."
-            )
+            self.io.tool_error(f"Diff is too large for {models.GPT35.name} to generate a commit message.")
             return
 
         diffs = "# Diffs:\n" + diffs
@@ -663,10 +646,7 @@ class Coder:
                 silent=True,
             )
         except openai.error.InvalidRequestError:
-            self.io.tool_error(
-                f"Failed to generate commit message using {models.GPT35.name} due to an invalid"
-                " request."
-            )
+            self.io.tool_error(f"Failed to generate commit message using {models.GPT35.name} due to an invalid" " request.")
             return
 
         commit_message = commit_message.strip()
@@ -674,9 +654,7 @@ class Coder:
             commit_message = commit_message[1:-1].strip()
 
         if interrupted:
-            self.io.tool_error(
-                f"Unable to get commit message from {models.GPT35.name}. Use /commit to try again."
-            )
+            self.io.tool_error(f"Unable to get commit message from {models.GPT35.name}. Use /commit to try again.")
             return
 
         return commit_message
@@ -704,9 +682,7 @@ class Coder:
                 relative_dirty_files.append(relative_fname)
 
                 try:
-                    current_branch_commit_count = len(
-                        list(self.repo.iter_commits(self.repo.active_branch))
-                    )
+                    current_branch_commit_count = len(list(self.repo.iter_commits(self.repo.active_branch)))
                 except git.exc.GitCommandError:
                     current_branch_commit_count = None
 

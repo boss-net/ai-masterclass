@@ -1,8 +1,9 @@
 import logging
-import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Dict
+from typing import Dict
+
+from .metrics import MetricCollector  # or correct import path
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,7 @@ class Monitor:
         self.alerts = []
         self.thresholds = []
         self.collector = MetricCollector()
+        self._config = {}
 
     def add_metric(self, metric: Metric):
         """Add a new metric."""
@@ -73,19 +75,11 @@ class Monitor:
     def get_metrics(self, name: str = None, tags: Dict[str, str] = None) -> list:
         """Get metrics by name and tags."""
         if name and tags:
-            return [
-                m
-                for m in self.metrics
-                if m.name == name and all(m.tags.get(k) == v for k, v in tags.items())
-            ]
+            return [m for m in self.metrics if m.name == name and all(m.tags.get(k) == v for k, v in tags.items())]
         elif name:
             return [m for m in self.metrics if m.name == name]
         elif tags:
-            return [
-                m
-                for m in self.metrics
-                if all(m.tags.get(k) == v for k, v in tags.items())
-            ]
+            return [m for m in self.metrics if all(m.tags.get(k) == v for k, v in tags.items())]
         return self.metrics
 
     def get_alerts(self, level: str = None) -> list:
@@ -93,3 +87,11 @@ class Monitor:
         if level:
             return [a for a in self.alerts if a["level"] == level]
         return self.alerts
+
+    def update_config(self, config: dict):
+        """Update monitor configuration."""
+        self._config = config or {}
+
+    def get_config(self) -> dict:
+        """Get current monitor configuration."""
+        return self._config

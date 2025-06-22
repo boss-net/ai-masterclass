@@ -13,9 +13,9 @@ class ConfigManager:
     def __init__(
         self,
         config_dir: Optional[str] = None,
-        config_file: str = 'config.yaml',
-        env_prefix: str = 'BOSSKIT_',
-        logger: Optional[logging.Logger] = None
+        config_file: str = "config.yaml",
+        env_prefix: str = "BOSSKIT_",
+        logger: Optional[logging.Logger] = None,
     ):
         """Initialize the configuration manager.
 
@@ -25,11 +25,11 @@ class ConfigManager:
             env_prefix: Environment variable prefix
             logger: Logger instance
         """
-        self.config_dir = Path(config_dir or os.path.expanduser('~/.bosskit'))
+        self.config_dir = Path(config_dir or os.path.expanduser("~/.bosskit"))
         self.config_file = Path(config_file)
         self.config_path = self.config_dir / self.config_file
         self.env_prefix = env_prefix
-        self.logger = logger or setup_logger('bosskit.config')
+        self.logger = logger or setup_logger("bosskit.config")
 
         # Create config directory if it doesn't exist
         self.config_dir.mkdir(parents=True, exist_ok=True)
@@ -45,7 +45,7 @@ class ConfigManager:
         """
         try:
             if self.config_path.exists():
-                with open(self.config_path, 'r') as f:
+                with open(self.config_path, "r") as f:
                     return yaml.safe_load(f) or {}
             return {}
         except Exception as e:
@@ -55,7 +55,7 @@ class ConfigManager:
     def _save_config(self) -> None:
         """Save configuration to file."""
         try:
-            with open(self.config_path, 'w') as f:
+            with open(self.config_path, "w") as f:
                 yaml.dump(self._config, f)
             self.logger.info("Configuration saved successfully")
         except Exception as e:
@@ -127,7 +127,7 @@ class ConfigManager:
             path: Path to configuration file
         """
         try:
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 new_config = yaml.safe_load(f) or {}
             self.update(new_config)
         except Exception as e:
@@ -145,15 +145,13 @@ class ConfigManager:
         """
         for key, value in schema.items():
             if key not in self._config:
-                if 'required' in value and value['required']:
+                if "required" in value and value["required"]:
                     self.logger.error(f"Missing required configuration: {key}")
                     return False
             else:
-                if 'type' in value:
-                    if not isinstance(self._config[key], value['type']):
-                        self.logger.error(
-                            f"Invalid type for {key}: {type(self._config[key])}"
-                        )
+                if "type" in value:
+                    if not isinstance(self._config[key], value["type"]):
+                        self.logger.error(f"Invalid type for {key}: {type(self._config[key])}")
                         return False
         return True
 
@@ -170,11 +168,12 @@ class ConfigManager:
         self._config = {}
         self._save_config()
 
+
 def get_config_manager(
     config_dir: Optional[str] = None,
-    config_file: str = 'config.yaml',
-    env_prefix: str = 'BOSSKIT_',
-    logger: Optional[logging.Logger] = None
+    config_file: str = "config.yaml",
+    env_prefix: str = "BOSSKIT_",
+    logger: Optional[logging.Logger] = None,
 ) -> ConfigManager:
     """Get a configuration manager instance.
 
@@ -187,9 +186,4 @@ def get_config_manager(
     Returns:
         ConfigManager instance
     """
-    return ConfigManager(
-        config_dir=config_dir,
-        config_file=config_file,
-        env_prefix=env_prefix,
-        logger=logger
-    )
+    return ConfigManager(config_dir=config_dir, config_file=config_file, env_prefix=env_prefix, logger=logger)

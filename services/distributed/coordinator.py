@@ -178,9 +178,7 @@ class MonitoringCoordinator:
                 aggregated[key] = {**alert, "nodes": set()}
             aggregated[key]["nodes"].add(alert["source"])
 
-        return [
-            {**alert, "nodes": list(alert["nodes"])} for alert in aggregated.values()
-        ]
+        return [{**alert, "nodes": list(alert["nodes"])} for alert in aggregated.values()]
 
     def _cleanup_nodes(self):
         """Clean up stale nodes."""

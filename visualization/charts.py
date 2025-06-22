@@ -1,8 +1,5 @@
 import logging
-from datetime import datetime
 from typing import Any, Dict, List
-
-import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
 
@@ -46,9 +43,7 @@ class LineChart(Chart):
 
 
 class BarChart(Chart):
-    def __init__(
-        self, title: str, data: List[Dict[str, Any]], group_by: str = "category"
-    ):
+    def __init__(self, title: str, data: List[Dict[str, Any]], group_by: str = "category"):
         super().__init__(title, data)
         self.group_by = group_by
 
@@ -74,9 +69,7 @@ class BarChart(Chart):
 
 
 class PieChart(Chart):
-    def __init__(
-        self, title: str, data: List[Dict[str, Any]], labels: str = "category"
-    ):
+    def __init__(self, title: str, data: List[Dict[str, Any]], labels: str = "category"):
         super().__init__(title, data)
         self.labels = labels
 
@@ -97,9 +90,7 @@ class PieChart(Chart):
 
 
 class HeatmapChart(Chart):
-    def __init__(
-        self, title: str, data: List[Dict[str, Any]], x: str = "x", y: str = "y"
-    ):
+    def __init__(self, title: str, data: List[Dict[str, Any]], x: str = "x", y: str = "y"):
         super().__init__(title, data)
         self.x = x
         self.y = y

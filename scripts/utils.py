@@ -8,18 +8,19 @@ def get_project_root():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.dirname(script_dir)
 
+
 def ensure_uv():
     """Ensure uv is installed."""
     try:
         # First try to find uv in PATH
-        result = subprocess.run(['which', 'uv'], capture_output=True, text=True)
+        result = subprocess.run(["which", "uv"], capture_output=True, text=True)
         if result.returncode == 0:
             print("uv found at:", result.stdout.strip())
             return
 
         # If not found, try to install it
         print("Installing uv...")
-        subprocess.run([sys.executable, '-m', 'pip', 'install', 'uv'], check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "uv"], check=True)
 
         # Get Python version
         python_version = f"Python{sys.version_info.major}.{sys.version_info.minor}"
@@ -28,8 +29,8 @@ def ensure_uv():
         possible_paths = [
             os.path.expanduser(f"~/Library/Python/3.8/bin/uv"),
             os.path.expanduser(f"~/Library/Python/{python_version}/bin/uv"),
-            os.path.join(os.path.dirname(sys.executable), 'uv'),
-            os.path.expanduser(f"~/.local/bin/uv")
+            os.path.join(os.path.dirname(sys.executable), "uv"),
+            os.path.expanduser(f"~/.local/bin/uv"),
         ]
 
         # Check each path
@@ -38,7 +39,7 @@ def ensure_uv():
                 print(f"Found uv at: {uv_path}")
                 # Add the containing directory to PATH
                 bin_dir = os.path.dirname(uv_path)
-                os.environ['PATH'] = f"{bin_dir}:{os.environ['PATH']}"
+                os.environ["PATH"] = f"{bin_dir}:{os.environ['PATH']}"
                 return
 
         raise FileNotFoundError("Could not find uv executable after installation")
@@ -46,17 +47,19 @@ def ensure_uv():
         print(f"Error installing uv: {e}")
         raise
 
+
 def init_uv_project():
     """Initialize uv project."""
     project_root = get_project_root()
     print(f"Initializing uv project in {project_root}...")
     try:
         # Try to run uv directly
-        subprocess.run(['uv', 'init'], check=True, cwd=project_root)
+        subprocess.run(["uv", "init"], check=True, cwd=project_root)
     except subprocess.CalledProcessError as e:
         print(f"Error: Failed to initialize uv project: {e}")
         return False
     return True
+
 
 def run_uv(command):
     """Run a uv command with error handling."""
@@ -72,10 +75,10 @@ def run_uv(command):
 
         # Run uv command with workspace configuration
         result = subprocess.run(
-            [uv_path, '--verbose', '--directory', project_root] + command.split(),
+            [uv_path, "--verbose", "--directory", project_root] + command.split(),
             check=True,
             capture_output=True,
-            text=True
+            text=True,
         )
 
         print(result.stdout)

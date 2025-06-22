@@ -57,9 +57,7 @@ def create_asana_task(task_name: str, due_on: Optional[str] = "today") -> str:
         logger.error("ASANA_PROJECT_ID is not set in the environment.")
         return "Environment not configured: ASANA_PROJECT_ID missing."
 
-    task_body = {
-        "data": {"name": task_name, "due_on": due_on, "projects": [project_id]}
-    }
+    task_body = {"data": {"name": task_name, "due_on": due_on, "projects": [project_id]}}
 
     try:
         api_client = get_asana_client()
@@ -101,9 +99,7 @@ def prompt_ai(messages: List[Dict[str, Any]]) -> str:
     client = get_openai_client()
     model = os.getenv("OPENAI_MODEL", "gpt-4o")
 
-    completion = client.chat.completions.create(
-        model=model, messages=messages, tools=get_tools()
-    )
+    completion = client.chat.completions.create(model=model, messages=messages, tools=get_tools())
 
     response_message = completion.choices[0].message
     tool_calls = response_message.tool_calls

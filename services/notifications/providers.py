@@ -10,9 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class EmailProvider:
-    def __init__(
-        self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str
-    ):
+    def __init__(self, smtp_server: str, smtp_port: int, sender_email: str, sender_password: str):
         self.smtp_server = smtp_server
         self.smtp_port = smtp_port
         self.sender_email = sender_email

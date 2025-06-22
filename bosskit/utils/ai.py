@@ -1,12 +1,12 @@
-import asyncio
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
-import openai
+import openai  # type: ignore
 
-from .errors import APIError, TimeoutError
+from .errors import APIError  # type: ignore
 from .logging_utils import setup_logger
 
 
@@ -17,7 +17,7 @@ class AIProcessor:
         model: str = "gpt-4",
         temperature: float = 0.7,
         max_tokens: int = 2000,
-        logger: Optional[logging.Logger] = None
+        logger: Optional[logging.Logger] = None,
     ):
         """Initialize the AI processor.
 
@@ -28,11 +28,11 @@ class AIProcessor:
             max_tokens: Maximum tokens
             logger: Logger instance
         """
-        self.api_key = api_key or os.getenv('OPENAI_API_KEY')
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self.logger = logger or setup_logger('bosskit.ai')
+        self.logger = logger or setup_logger("bosskit.ai")
 
         if not self.api_key:
             raise ValueError("API key is required")
@@ -44,7 +44,7 @@ class AIProcessor:
         messages: List[Dict[str, str]],
         functions: Optional[List[Dict[str, Any]]] = None,
         temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None
+        max_tokens: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Create a chat completion.
 
@@ -66,19 +66,18 @@ class AIProcessor:
                 messages=messages,
                 functions=functions,
                 temperature=temperature or self.temperature,
-                max_tokens=max_tokens or self.max_tokens
+                max_tokens=max_tokens or self.max_tokens,
             )
             return response
         except Exception as e:
-            self.logger.error(f"Chat completion failed: {str(e)}")
-            raise APIError(f"Failed to create chat completion: {str(e)}")
+            raise APIError(f"Failed to create chat completion: {str(e)}") from e
 
     async def stream_chat_completion(
         self,
         messages: List[Dict[str, str]],
         functions: Optional[List[Dict[str, Any]]] = None,
         temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None
+        max_tokens: Optional[int] = None,
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """Stream chat completion.
 
@@ -101,21 +100,20 @@ class AIProcessor:
                 functions=functions,
                 temperature=temperature or self.temperature,
                 max_tokens=max_tokens or self.max_tokens,
-                stream=True
+                stream=True,
             )
 
             async for chunk in response:
                 yield chunk
         except Exception as e:
-            self.logger.error(f"Stream chat failed: {str(e)}")
-            raise APIError(f"Failed to stream chat completion: {str(e)}")
+            raise APIError(f"Failed to stream chat completion: {str(e)}") from e
 
     async def function_calling(
         self,
         messages: List[Dict[str, str]],
         functions: List[Dict[str, Any]],
         temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None
+        max_tokens: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Execute function calling.
 
@@ -133,10 +131,7 @@ class AIProcessor:
         """
         try:
             response = await self.chat_completion(
-                messages=messages,
-                functions=functions,
-                temperature=temperature,
-                max_tokens=max_tokens
+                messages=messages, functions=functions, temperature=temperature, max_tokens=max_tokens
             )
 
             if not response.choices[0].message.function_call:
@@ -144,14 +139,9 @@ class AIProcessor:
 
             return json.loads(response.choices[0].message.function_call.arguments)
         except Exception as e:
-            self.logger.error(f"Function calling failed: {str(e)}")
-            raise APIError(f"Failed to execute function calling: {str(e)}")
+            raise APIError(f"Failed to execute function calling: {str(e)}") from e
 
-    async def embeddings(
-        self,
-        text: Union[str, List[str]],
-        model: Optional[str] = None
-    ) -> List[List[float]]:
+    async def embeddings(self, text: Union[str, List[str]], model: Optional[str] = None) -> List[List[float]]:
         """Generate embeddings.
 
         Args:
@@ -165,25 +155,17 @@ class AIProcessor:
             APIError: If request fails
         """
         try:
-            response = await openai.Embedding.acreate(
-                input=text,
-                model=model or "text-embedding-ada-002"
-            )
+            response = await openai.Embedding.acreate(input=text, model=model or "text-embedding-ada-002")
 
             if isinstance(text, str):
                 return [response.data[0].embedding]
 
             return [d.embedding for d in response.data]
         except Exception as e:
-            self.logger.error(f"Embeddings failed: {str(e)}")
-            raise APIError(f"Failed to generate embeddings: {str(e)}")
+            raise APIError(f"Failed to generate embeddings: {str(e)}") from e
 
     async def image_generation(
-        self,
-        prompt: str,
-        n: int = 1,
-        size: str = "1024x1024",
-        response_format: str = "url"
+        self, prompt: str, n: int = 1, size: str = "1024x1024", response_format: str = "url"
     ) -> List[Union[str, bytes]]:
         """Generate images.
 
@@ -200,26 +182,17 @@ class AIProcessor:
             APIError: If request fails
         """
         try:
-            response = await openai.Image.acreate(
-                prompt=prompt,
-                n=n,
-                size=size,
-                response_format=response_format
-            )
+            response = await openai.Image.acreate(prompt=prompt, n=n, size=size, response_format=response_format)
 
             if response_format == "url":
                 return [d.url for d in response.data]
 
             return [d.b64_json for d in response.data]
         except Exception as e:
-            self.logger.error(f"Image generation failed: {str(e)}")
-            raise APIError(f"Failed to generate image: {str(e)}")
+            raise APIError(f"Failed to generate image: {str(e)}") from e
 
     async def audio_transcription(
-        self,
-        audio_file: Union[str, Path],
-        model: Optional[str] = None,
-        language: Optional[str] = None
+        self, audio_file: Union[str, Path], model: Optional[str] = None, language: Optional[str] = None
     ) -> str:
         """Transcribe audio.
 
@@ -235,23 +208,19 @@ class AIProcessor:
             APIError: If request fails
         """
         try:
-            with open(audio_file, 'rb') as f:
-                response = await openai.Audio.atranscribe(
-                    file=f,
-                    model=model or "whisper-1",
-                    language=language
-                )
+            with open(audio_file, "rb") as f:
+                response = await openai.Audio.atranscribe(file=f, model=model or "whisper-1", language=language)
             return response.text
         except Exception as e:
-            self.logger.error(f"Audio transcription failed: {str(e)}")
-            raise APIError(f"Failed to transcribe audio: {str(e)}")
+            raise APIError(f"Failed to transcribe audio: {str(e)}") from e
+
 
 def get_ai_processor(
     api_key: Optional[str] = None,
     model: str = "gpt-4",
     temperature: float = 0.7,
     max_tokens: int = 2000,
-    logger: Optional[logging.Logger] = None
+    logger: Optional[logging.Logger] = None,
 ) -> AIProcessor:
     """Get an AI processor instance.
 
@@ -265,10 +234,4 @@ def get_ai_processor(
     Returns:
         AIProcessor instance
     """
-    return AIProcessor(
-        api_key=api_key,
-        model=model,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        logger=logger
-    )
+    return AIProcessor(api_key=api_key, model=model, temperature=temperature, max_tokens=max_tokens, logger=logger)

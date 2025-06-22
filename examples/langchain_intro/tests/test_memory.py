@@ -1,9 +1,5 @@
 import pytest
-from modules.langchain_intro.langchain import (
-    ConversationMemory,
-    LangChainAgent,
-    VectorStoreMemory,
-)
+from modules.langchain_intro.langchain import ConversationMemory, LangChainAgent, VectorStoreMemory
 
 
 def test_conversation_memory():

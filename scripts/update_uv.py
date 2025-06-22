@@ -16,7 +16,7 @@ ensure_uv()
 
 # Skip project initialization if it's already initialized
 project_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-pyproject_path = os.path.join(project_root, 'pyproject.toml')
+pyproject_path = os.path.join(project_root, "pyproject.toml")
 if not os.path.exists(pyproject_path):
     print(f"Initializing uv project in {project_root}...")
     init_uv_project()

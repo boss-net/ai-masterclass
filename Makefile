@@ -103,8 +103,8 @@ install-env:
 format:
 	$(MAKE) install-dev
 	@echo "Formatting code..."
-	.venv/bin/isort .
-	.venv/bin/black --target-version py311 .
+	.venv/bin/isort --py 311 .
+	.venv/bin/black --target-version=py311 .
 
 # Lint code
 .PHONY: lint
@@ -398,7 +398,7 @@ lint:
 format:
 	$(MAKE) install-dev
 	@echo "Formatting code..."
-	.venv/bin/isort --python-version=3.11 .
+	.venv/bin/isort --py 311 .
 	.venv/bin/black --target-version=py311 .
 
 # Lint code

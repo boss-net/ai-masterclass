@@ -29,9 +29,7 @@ class Notifier:
                 success = provider.send(alert)
                 results.append(success)
                 if not success:
-                    logger.error(
-                        f"Failed to send notification via {provider.__class__.__name__}"
-                    )
+                    logger.error(f"Failed to send notification via {provider.__class__.__name__}")
             except Exception as e:
                 logger.error(f"Error sending notification: {e}")
                 results.append(False)

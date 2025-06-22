@@ -341,9 +341,7 @@ class RepoMap:
                 continue
             ranked_tags += list(definitions.get((fname, ident), []))
 
-        rel_other_fnames_without_tags = set(
-            os.path.relpath(fname, self.root) for fname in other_fnames
-        )
+        rel_other_fnames_without_tags = set(os.path.relpath(fname, self.root) for fname in other_fnames)
 
         fnames_already_included = set(rt[0] for rt in ranked_tags)
 

@@ -140,10 +140,7 @@ with importlib.resources.open_text("bosskit.resources", "model-settings.yml") as
 
 
 class ModelInfoManager:
-    MODEL_INFO_URL = (
-        "https://raw.githubusercontent.com/BerriAI/litellm/main/"
-        "model_prices_and_context_window.json"
-    )
+    MODEL_INFO_URL = "https://raw.githubusercontent.com/BerriAI/litellm/main/" "model_prices_and_context_window.json"
     CACHE_TTL = 60 * 60 * 24  # 24 hours
 
     def __init__(self):
@@ -273,9 +270,7 @@ class ModelInfoManager:
             html = response.text
             import re
 
-            if re.search(
-                rf"The model\s*.*{re.escape(url_part)}.* is not available", html, re.IGNORECASE
-            ):
+            if re.search(rf"The model\s*.*{re.escape(url_part)}.* is not available", html, re.IGNORECASE):
                 print(f"\033[91mError: Model '{url_part}' is not available\033[0m")
                 return {}
             text = re.sub(r"<[^>]+>", " ", html)
@@ -308,9 +303,7 @@ model_info_manager = ModelInfoManager()
 
 
 class Model(ModelSettings):
-    def __init__(
-        self, model, weak_model=None, editor_model=None, editor_edit_format=None, verbose=False
-    ):
+    def __init__(self, model, weak_model=None, editor_model=None, editor_edit_format=None, verbose=False):
         # Map any alias to its canonical name
         model = MODEL_ALIASES.get(model, model)
 
@@ -322,9 +315,7 @@ class Model(ModelSettings):
         self.editor_model = None
 
         # Find the extra settings
-        self.extra_model_settings = next(
-            (ms for ms in MODEL_SETTINGS if ms.name == "bosskit/extra_params"), None
-        )
+        self.extra_model_settings = next((ms for ms in MODEL_SETTINGS if ms.name == "bosskit/extra_params"), None)
 
         self.info = self.get_model_info(model)
 
@@ -518,12 +509,7 @@ class Model(ModelSettings):
             self.use_temperature = False
             return  # <--
 
-        if (
-            "qwen" in model
-            and "coder" in model
-            and ("2.5" in model or "2-5" in model)
-            and "32b" in model
-        ):
+        if "qwen" in model and "coder" in model and ("2.5" in model or "2-5" in model) and "32b" in model:
             self.edit_format = "diff"
             self.editor_edit_format = "editor-diff"
             self.use_repo_map = True
@@ -706,16 +692,10 @@ class Model(ModelSettings):
         res = litellm.validate_environment(model)
 
         # If missing AWS credential keys but AWS_PROFILE is set, consider AWS credentials valid
-        if res["missing_keys"] and any(
-            key in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"] for key in res["missing_keys"]
-        ):
+        if res["missing_keys"] and any(key in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"] for key in res["missing_keys"]):
             if model.startswith("bedrock/") or model.startswith("us.anthropic."):
                 if os.environ.get("AWS_PROFILE"):
-                    res["missing_keys"] = [
-                        k
-                        for k in res["missing_keys"]
-                        if k not in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]
-                    ]
+                    res["missing_keys"] = [k for k in res["missing_keys"] if k not in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]]
                     if not res["missing_keys"]:
                         res["keys_in_environment"] = True
 
@@ -832,9 +812,7 @@ class Model(ModelSettings):
                 ):
                     budget = self.extra_params["extra_body"]["reasoning"]["max_tokens"]
             # Check for standard thinking format
-            elif (
-                "thinking" in self.extra_params and "budget_tokens" in self.extra_params["thinking"]
-            ):
+            elif "thinking" in self.extra_params and "budget_tokens" in self.extra_params["thinking"]:
                 budget = self.extra_params["thinking"]["budget_tokens"]
 
         return budget
@@ -870,10 +848,7 @@ class Model(ModelSettings):
                 ):
                     return self.extra_params["extra_body"]["reasoning"]["effort"]
             # Check for standard reasoning_effort format (e.g. in extra_body)
-            elif (
-                "extra_body" in self.extra_params
-                and "reasoning_effort" in self.extra_params["extra_body"]
-            ):
+            elif "extra_body" in self.extra_params and "reasoning_effort" in self.extra_params["extra_body"]:
                 return self.extra_params["extra_body"]["reasoning_effort"]
         return None
 
@@ -892,8 +867,7 @@ class Model(ModelSettings):
         openai_api_key = "OPENAI_API_KEY"
 
         if openai_api_key not in os.environ or (
-            int(dict(x.split("=") for x in os.environ[openai_api_key].split(";"))["exp"])
-            < int(datetime.now().timestamp())
+            int(dict(x.split("=") for x in os.environ[openai_api_key].split(";"))["exp"]) < int(datetime.now().timestamp())
         ):
             import requests
 
@@ -1052,9 +1026,7 @@ def register_models(model_settings_fnames):
 
             for model_settings_dict in model_settings_list:
                 model_settings = ModelSettings(**model_settings_dict)
-                existing_model_settings = next(
-                    (ms for ms in MODEL_SETTINGS if ms.name == model_settings.name), None
-                )
+                existing_model_settings = next((ms for ms in MODEL_SETTINGS if ms.name == model_settings.name), None)
 
                 if existing_model_settings:
                     MODEL_SETTINGS.remove(existing_model_settings)
@@ -1130,10 +1102,7 @@ def sanity_check_model(io, model):
             io.tool_output(f"- {key}: {status}")
 
         if platform.system() == "Windows":
-            io.tool_output(
-                "Note: You may need to restart your terminal or command prompt for `setx` to take"
-                " effect."
-            )
+            io.tool_output("Note: You may need to restart your terminal or command prompt for `setx` to take" " effect.")
 
     elif not model.keys_in_environment:
         show = True
@@ -1144,9 +1113,7 @@ def sanity_check_model(io, model):
 
     if not model.info:
         show = True
-        io.tool_warning(
-            f"Warning for {model}: Unknown context window size and costs, using sane defaults."
-        )
+        io.tool_warning(f"Warning for {model}: Unknown context window size and costs, using sane defaults.")
 
         possible_matches = fuzzy_match_models(model.name)
         if possible_matches:
@@ -1167,9 +1134,7 @@ def check_for_dependencies(io, model_name):
     """
     # Check if this is a Bedrock model and ensure boto3 is installed
     if model_name.startswith("bedrock/"):
-        check_pip_install_extra(
-            io, "boto3", "AWS Bedrock models require the boto3 package.", ["boto3"]
-        )
+        check_pip_install_extra(io, "boto3", "AWS Bedrock models require the boto3 package.", ["boto3"])
 
     # Check if this is a Vertex AI model and ensure google-cloud-aiplatform is installed
     elif model_name.startswith("vertex_ai/"):

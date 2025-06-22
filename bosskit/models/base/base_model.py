@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass
@@ -9,6 +9,7 @@ class ModelMessage:
     role: str
     content: str
     name: Optional[str] = None
+
 
 @dataclass
 class ModelSettings:
@@ -34,6 +35,7 @@ class ModelSettings:
     system_prompt_prefix: Optional[str] = None
     accepts_settings: Optional[list] = None
 
+
 class BaseModel(ABC):
     def __init__(self, settings: ModelSettings):
         self.settings = settings
@@ -47,12 +49,12 @@ class BaseModel(ABC):
     @abstractmethod
     def validate_environment(self) -> Dict[str, Any]:
         """Validate environment variables and return missing keys."""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def get_model_info(self) -> Dict[str, Any]:
         """Get model information."""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def send_completion(
@@ -60,10 +62,10 @@ class BaseModel(ABC):
         messages: List[ModelMessage],
         functions: Optional[List[Dict[str, Any]]] = None,
         stream: bool = False,
-        temperature: Optional[float] = None
+        temperature: Optional[float] = None,
     ) -> Any:
         """Send completion request to the model."""
-        pass
+        raise NotImplementedError()
 
     def token_count(self, messages: List[ModelMessage]) -> int:
         """Calculate token count for messages."""

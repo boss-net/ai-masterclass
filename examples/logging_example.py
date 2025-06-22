@@ -7,10 +7,7 @@ import logging
 from bosskit import BossKit
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # Initialize with logging enabled
 bk = BossKit(enable_logging=True)

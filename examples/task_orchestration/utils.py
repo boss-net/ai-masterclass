@@ -2,16 +2,11 @@
 
 import json
 import logging
-import os
-import time
 from datetime import datetime
-from functools import wraps
 from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -61,9 +56,7 @@ def rate_limit(func):
     return wrapper
 
 
-def batch_process(
-    tasks: List[Dict[str, Any]], batch_size: int = 10
-) -> List[List[Dict[str, Any]]]:
+def batch_process(tasks: List[Dict[str, Any]], batch_size: int = 10) -> List[List[Dict[str, Any]]]:
     """Batch process tasks."""
     return [tasks[i : i + batch_size] for i in range(0, len(tasks), batch_size)]
 

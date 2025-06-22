@@ -9,9 +9,7 @@ from functools import wraps
 from typing import Any, Dict, List
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -61,9 +59,7 @@ def rate_limit(func):
     return wrapper
 
 
-def batch_process(
-    documents: List[Dict[str, Any]], batch_size: int = 10
-) -> List[List[Dict[str, Any]]]:
+def batch_process(documents: List[Dict[str, Any]], batch_size: int = 10) -> List[List[Dict[str, Any]]]:
     """Batch process documents."""
     return [documents[i : i + batch_size] for i in range(0, len(documents), batch_size)]
 

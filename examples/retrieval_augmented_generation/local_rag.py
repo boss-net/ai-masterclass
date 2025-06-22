@@ -6,15 +6,9 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import DirectoryLoader
-from langchain_community.embeddings.sentence_transformer import (
-    SentenceTransformerEmbeddings,
-)
+from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from langchain_huggingface import (
-    ChatHuggingFace,
-    HuggingFaceEndpoint,
-    HuggingFacePipeline,
-)
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint, HuggingFacePipeline
 from langchain_text_splitters import CharacterTextSplitter
 
 # --- Load environment variables ---
@@ -51,9 +45,7 @@ def get_local_llm():
 def load_documents(directory):
     """Load and split documents from the specified directory."""
     if not os.path.exists(directory) or not os.path.isdir(directory):
-        st.error(
-            f"Directory '{directory}' not found. Please check the DIRECTORY environment variable."
-        )
+        st.error(f"Directory '{directory}' not found. Please check the DIRECTORY environment variable.")
         return []
     loader = DirectoryLoader(directory)
     documents = loader.load()
@@ -81,10 +73,7 @@ def query_documents(question, db):
     similar_docs = db.similarity_search(question, k=5)
     if not similar_docs:
         return ["No similar documents found."]
-    return [
-        f"Source: {doc.metadata.get('source', 'N/A')}\nContent: {doc.page_content}"
-        for doc in similar_docs
-    ]
+    return [f"Source: {doc.metadata.get('source', 'N/A')}\nContent: {doc.page_content}" for doc in similar_docs]
 
 
 def prompt_ai(messages, db, llm):
@@ -94,14 +83,9 @@ def prompt_ai(messages, db, llm):
     user_prompt = messages[-1].content
     retrieved_context = query_documents(user_prompt, db)
     formatted_context = "\n\n".join(retrieved_context)
-    formatted_prompt = (
-        f"Context for answering the question:\n{formatted_context}\n\n"
-        f"Question/user input:\n{user_prompt}"
-    )
+    formatted_prompt = f"Context for answering the question:\n{formatted_context}\n\n" f"Question/user input:\n{user_prompt}"
     doc_chatbot = ChatHuggingFace(llm=llm)
-    ai_response = doc_chatbot.invoke(
-        messages[:-1] + [HumanMessage(content=formatted_prompt)]
-    )
+    ai_response = doc_chatbot.invoke(messages[:-1] + [HumanMessage(content=formatted_prompt)])
     return ai_response
 
 

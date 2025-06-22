@@ -1,7 +1,6 @@
 import logging
 import time
-from functools import lru_cache
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +37,7 @@ class Cache:
         """Set item in cache."""
         if len(self._cache) >= self.max_size:
             # Remove oldest item
-            oldest_key = min(
-                self._cache.keys(), key=lambda k: self._cache[k]["timestamp"]
-            )
+            oldest_key = min(self._cache.keys(), key=lambda k: self._cache[k]["timestamp"])
             del self._cache[oldest_key]
 
         self._cache[key] = {"value": value, "timestamp": time.time()}

@@ -16,18 +16,14 @@ from openai import OpenAI
 # ----------------- SETUP & LOGGING -----------------
 load_dotenv()
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 MODEL = os.getenv("LLM_MODEL", "gpt-4o")
 ASANA_ACCESS_TOKEN = os.getenv("ASANA_ACCESS_TOKEN", "")
 WORKSPACE_GID = os.getenv("ASANA_WORKSPACE_ID", "")  # Corrected variable name
 
 if not ASANA_ACCESS_TOKEN or not WORKSPACE_GID:
-    logging.warning(
-        "Missing ASANA_ACCESS_TOKEN or ASANA_WORKSPACE_ID in environment variables."
-    )
+    logging.warning("Missing ASANA_ACCESS_TOKEN or ASANA_WORKSPACE_ID in environment variables.")
 
 configuration = asana.Configuration()
 configuration.access_token = ASANA_ACCESS_TOKEN
@@ -43,9 +39,7 @@ def create_asana_task(task_name: str, project_gid: str, due_on: str = "today") -
     """Create a task in Asana."""
     if due_on == "today":
         due_on = str(datetime.now().date())
-    task_body = {
-        "data": {"name": task_name, "due_on": due_on, "projects": [project_gid]}
-    }
+    task_body = {"data": {"name": task_name, "due_on": due_on, "projects": [project_gid]}}
     try:
         api_response = tasks_api_instance.create_task(task_body, {})
         return json.dumps(api_response, indent=2)
@@ -69,9 +63,7 @@ def get_asana_projects() -> str:
 @tool
 def create_asana_project(project_name: str, due_on: str = None) -> str:
     """Create a project in Asana."""
-    body = {
-        "data": {"name": project_name, "due_on": due_on, "workspace": WORKSPACE_GID}
-    }
+    body = {"data": {"name": project_name, "due_on": due_on, "workspace": WORKSPACE_GID}}
     try:
         api_response = projects_api_instance.create_project(body, {})
         return json.dumps(api_response, indent=2)
@@ -128,11 +120,7 @@ available_functions = {
 
 
 def get_chatbot(model_name: str):
-    return (
-        ChatOpenAI(model=model_name)
-        if "gpt" in model_name.lower()
-        else ChatAnthropic(model=model_name)
-    )
+    return ChatOpenAI(model=model_name) if "gpt" in model_name.lower() else ChatAnthropic(model=model_name)
 
 
 def prompt_ai(messages, nested_calls=0):
@@ -162,11 +150,7 @@ def prompt_ai(messages, nested_calls=0):
             selected_tool = available_functions.get(tool_name)
             if not selected_tool:
                 logging.warning(f"Unknown tool requested: {tool_name}")
-                messages.append(
-                    ToolMessage(
-                        f"Unknown tool: {tool_name}", tool_call_id=tool_call["id"]
-                    )
-                )
+                messages.append(ToolMessage(f"Unknown tool: {tool_name}", tool_call_id=tool_call["id"]))
                 continue
             tool_output = selected_tool.invoke(tool_call["args"])
             messages.append(ToolMessage(tool_output, tool_call_id=tool_call["id"]))
