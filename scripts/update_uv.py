@@ -5,11 +5,11 @@ import os
 import subprocess
 import sys
 
-# Add project root to PYTHONPATH
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
 # Import from scripts module
 from scripts.utils import ensure_uv, init_uv_project, run_uv
+
+# Add project root to PYTHONPATH
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 # Initialize project and ensure uv is installed
 ensure_uv()

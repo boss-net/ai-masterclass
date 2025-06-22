@@ -65,7 +65,7 @@ def run_uv(command):
     """Run a uv command with error handling."""
     try:
         # Use the fixed path for Python 3.8
-        uv_path = os.path.expanduser("~/Library/Python/3.8/bin/uv")
+        uv_path = os.path.expanduser("~/.local/bin/uv")
 
         if not os.path.exists(uv_path):
             raise FileNotFoundError(f"uv executable not found at {uv_path}")
