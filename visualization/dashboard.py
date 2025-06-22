@@ -55,7 +55,7 @@ class Dashboard:
         html += "<h2>Metrics</h2>"
         html += "<div class='metrics'>"
         for metric in self.metrics:
-            html += f"<div class='metric'>"
+            html += "<div class='metric'>"
             html += f"<h3>{metric['name']}</h3>"
             html += f"<p>Value: {metric['value']}</p>"
             html += f"<p>Timestamp: {metric['timestamp']}</p>"
