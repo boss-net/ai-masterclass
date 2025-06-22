@@ -56,7 +56,7 @@ exclude = '''
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-line_length = 113
+line_length = 125
 skip_gitignore = true
 
 [tool.pytest.ini_options]
